@@ -1,0 +1,25 @@
+{
+  "annotations": { "list": [ { "builtIn": 1, "datasource": { "type": "grafana", "uid": "-- Grafana --" }, "enable": true, "hide": true, "iconColor": "rgba(0, 211, 255, 1)", "name": "Annotations & Alerts", "type": "dashboard" } ] },
+  "editable": true, "fiscalYearStartMonth": 0, "graphTooltip": 0, "id": null, "links": [], "liveNow": false,
+  "panels": [
+    {
+      "title": "Volume total de requêtes RAG", "type": "stat", "gridPos": { "h": 8, "w": 6, "x": 0, "y": 0 },
+      "targets": [ { "expr": "rag_requests_total", "refId": "A" } ],
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto" }
+    },
+    {
+      "title": "Latence moyenne de génération (s)", "type": "timeseries", "gridPos": { "h": 8, "w": 9, "x": 6, "y": 0 },
+      "targets": [ { "expr": "rate(rag_generation_latency_seconds_sum[5m]) / rate(rag_generation_latency_seconds_count[5m])", "refId": "A" } ]
+    },
+    {
+      "title": "Qualité : Score de Fidélité", "type": "gauge", "gridPos": { "h": 8, "w": 9, "x": 15, "y": 0 },
+      "targets": [ { "expr": "rag_faithfulness_score", "refId": "A" } ],
+      "fieldConfig": { "defaults": { "min": 0, "max": 1, "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "yellow", "value": 0.6 }, { "color": "green", "value": 0.8 } ] } } }
+    },
+    {
+      "title": "Utilisation CPU Backend (%)", "type": "timeseries", "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "targets": [ { "expr": "sum(rate(container_cpu_usage_seconds_total{name=\"cliniq_backend\"}[5m])) * 100", "refId": "A" } ]
+    }
+  ],
+  "refresh": "5s", "schemaVersion": 38, "style": "dark", "tags": [], "templating": { "list": [] }, "time": { "from": "now-30m", "to": "now" }, "timepicker": {}, "timezone": "", "title": "CliniQ RAG Monitoring", "uid": "cliniq_rag_001", "version": 1
+}
