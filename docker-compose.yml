@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: cliniq_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: cliniq_user
+      POSTGRES_PASSWORD: cliniq_password
+      POSTGRES_DB: cliniq_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+    container_name: cliniq_backend
+    env_file:           
+      - .env 
+    volumes:
+      - ./backend:/app  
+      - ./data:/app/data 
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://cliniq_user:cliniq_password@db:5432/cliniq_db
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: cliniq_frontend
+    volumes:
+      - ./frontend:/app 
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+  
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.14.1
+    container_name: cliniq_mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://0.0.0.0:5000
+    command: mlflow server --host 0.0.0.0 --port 5000 --dev
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cliniq_prometheus
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml 
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cliniq_grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin 
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cliniq_cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    ports:
+      - "8081:8080"
+
+
+volumes:
+  postgres_data:
