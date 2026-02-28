@@ -1,0 +1,39 @@
+# --- API & Core ---
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+pydantic>=2.0.0
+pydantic-settings>=2.0.0
+python-multipart>=0.0.6
+email-validator>=2.1.0
+
+# --- Database & ORM ---
+SQLAlchemy>=2.0.0
+alembic>=1.11.0
+psycopg2-binary>=2.9.9
+
+# --- Security (JWT & Hashing) ---
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# --- RAG & AI ---
+langchain>=0.1.0
+langchain-community>=0.0.10
+langchain-openai>=0.0.2 
+chromadb>=0.4.22
+PyPDF2>=3.0.0
+sentence-transformers>=2.3.0
+docling
+cohere>=5.0.0
+langchain-cohere>=0.1.0
+langchain-classic>=0.1.0
+langchain-google-genai>=1.0.0
+
+langchain-groq
+
+# --- LLMOps & Monitoring ---
+mlflow>=2.9.0
+deepeval>=0.20.0
+
+prometheus-fastapi-instrumentator
+prometheus-fastapi-instrumentator
+prometheus-client
