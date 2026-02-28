@@ -25,9 +25,7 @@ jobs:
         env:
           DATABASE_URL: sqlite:///:memory:
           SECRET_KEY: test_secret_key_123
-        run: |
-          cd backend
-          python -m pytest tests/ -v
+        run: cd backend && python -m pytest tests/ -v
 
   build-and-push:
     needs: run-tests
