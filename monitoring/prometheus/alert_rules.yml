@@ -1,0 +1,25 @@
+groups:
+  - name: RAG_Alerts
+    rules:
+      # Alerte si la latence du RAG dépasse 5 secondes
+      - alert: RAGHighLatency
+        expr: rag_generation_latency_seconds_sum / rag_generation_latency_seconds_count > 5
+        for: 1m
+        annotations:
+          summary: "Latence RAG élevée sur {{ $labels.instance }}"
+          description: "La latence moyenne est de {{ $value }}s."
+
+      # Alerte si le taux d'erreurs dépasse 5%
+      - alert: RAGHighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 1m
+        annotations:
+          summary: "Taux d'erreurs critique"
+          description: "Le RAG échoue pour {{ $value }}% des requêtes."
+
+      # Alerte si la fidélité tombe sous 0.6
+      - alert: RAGLowQuality
+        expr: avg_over_time(rag_faithfulness_score[10m]) < 0.6
+        for: 2m
+        annotations:
+          summary: "Qualité RAG insuffisante"
