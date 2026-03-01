@@ -20,13 +20,15 @@ jobs:
         env:
           DATABASE_URL: "sqlite:///:memory:"
           SECRET_KEY: "test_secret_key_123"
-          COHERE_API_KEY: "dummy_key_for_tests"
-          GOOGLE_API_KEY: "dummy_key_for_tests"
-          GROQ_API_KEY: "dummy_key_for_tests"
-          CHROMA_SERVER_AUTH_CREDENTIALS_FILE: "/tmp/chroma_db"          
-          IS_TESTING: "True"
+          COHERE_API_KEY: "dummy_key"
+          GOOGLE_API_KEY: "dummy_key"
+          GROQ_API_KEY: "dummy_key"
+          # On redirige Chroma vers un dossier autorisé
+          CHROMA_PERSIST_DIRECTORY: "/tmp/chroma_db"
           PYTHONPATH: ${{ github.workspace }}/backend
         run: |
+          # On crée le dossier physiquement avant de lancer les tests
+          mkdir -p /tmp/chroma_db
           cd backend
           python -m pytest tests/ -v
   build-and-push:
