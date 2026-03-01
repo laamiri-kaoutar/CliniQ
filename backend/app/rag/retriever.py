@@ -14,7 +14,7 @@ from langchain_groq import ChatGroq
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 # CHROMA_PERSIST_DIR = "/app/chroma_db"
 
-CHROMA_PERSIST_DIR = os.getenv("CHROMA_DB_DIR", "/app/chroma_db")
+# CHROMA_PERSIST_DIR = os.getenv("CHROMA_DB_DIR", "/app/chroma_db")
 
 
 class QueryExpander:
@@ -69,10 +69,20 @@ class BaseRetriever:
             model_kwargs={'device': 'cpu'},
             encode_kwargs={'normalize_embeddings': True}
         )
-        self.vector_store = Chroma(
-            persist_directory=CHROMA_PERSIST_DIR,
-            embedding_function=self.embeddings
-        )
+
+        if os.getenv("IS_TESTING") == "True":
+            # Mode éphémère (RAM) pour GitHub Actions
+            self.vector_store = Chroma(
+                embedding_function=self.embeddings
+            )
+        else:
+            # Ton mode normal pour ton PC ou Docker
+            CHROMA_PERSIST_DIR = "/app/chroma_db"
+            self.vector_store = Chroma(
+                persist_directory=CHROMA_PERSIST_DIR,
+                embedding_function=self.embeddings
+            )
+        
         self.retriever = self.vector_store.as_retriever(search_kwargs={"k": self.k})
 
     def retrieve_candidates(self, queries: List[str]) -> List[any]:

@@ -41,13 +41,6 @@ class QueryService:
             db.commit()
             db.refresh(new_query)
     
-            # return {
-            #     "id": new_query.id,
-            #     "answer": final_answer_text,
-            #     "sources": result["sources"],
-            #     "created_at": new_query.created_at
-            # }
-
             return {
             "id": new_query.id,
             "query_text": query_text,           
