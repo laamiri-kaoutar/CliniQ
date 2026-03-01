@@ -12,7 +12,10 @@ from langchain_groq import ChatGroq
 
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-CHROMA_PERSIST_DIR = "/app/chroma_db"
+# CHROMA_PERSIST_DIR = "/app/chroma_db"
+
+CHROMA_PERSIST_DIR = os.getenv("CHROMA_DB_DIR", "/app/chroma_db")
+
 
 class QueryExpander:
     def __init__(self):
