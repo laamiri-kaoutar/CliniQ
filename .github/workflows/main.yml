@@ -23,7 +23,7 @@ jobs:
           COHERE_API_KEY: "dummy_key_for_tests"
           GOOGLE_API_KEY: "dummy_key_for_tests"
           GROQ_API_KEY: "dummy_key_for_tests"
-          CHROMA_DB_DIR: "/tmp/chroma_db"
+          CHROMA_SERVER_AUTH_CREDENTIALS_FILE: "/tmp/chroma_db"          
           IS_TESTING: "True"
           PYTHONPATH: ${{ github.workspace }}/backend
         run: |
